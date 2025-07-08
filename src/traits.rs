@@ -1,8 +1,6 @@
 trait Summary {
-    fn summarize(&self) ->String {
-        return String::from("Summarize");
-
-
+    fn summarize(&self) -> String {
+        return String::from("The trait is");
     }
 }
 
@@ -13,13 +11,14 @@ struct User {
 
 impl Summary for User {
     fn summarize(&self) ->String {
-        return format! ("User {} is {} year old", self.name,self.age);
+        return format!("The age of {}, is {} years",self.name,self.age);
     }
 }
-fn main( ){
-    let user = User  {
-        name : String ::from("Amit"),
-        age : 21,   
+
+fn main() {
+    let  user = User {
+        name : String::from("Arpita"),
+        age: 21,
     };
-    println!("{}",user.summarize() );
+    println!("{}", user.summarize())
 }

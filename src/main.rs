@@ -6,12 +6,14 @@ use axum::routing::get_service;
 use axum::{Router, response::Html};
 use serde::Deserialize;
 use std::net::SocketAddr;
-
+use tower_http::services::ServeDir;
+mod error;
 #[tokio::main]
 async fn main() {
     // Build our application with a route
     let route_all = Router::new()
-    .merge(router_hello()) ; // Only works if router_api is a `Router`, not a function call
+        .merge(router_hello())
+        .fallback_service(route_static()); // Only works if router_api is a `Router`, not a function call
 
     // Set the address to listen on
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -30,9 +32,8 @@ struct HelloParams {
 async fn hello2(Path(new): Path<String>) -> impl IntoResponse {
     Html(format!("Hello <strong> {new}</strong"))
 }
-fn route_static() ->Router {
-    Router::new().nest_service("/",get_service(Serve::new("./")))
-
+fn route_static() -> Router {
+    Router::new().nest_service("/", get_service(ServeDir::new("./")))
 }
 fn router_hello() -> Router {
     Router::new()

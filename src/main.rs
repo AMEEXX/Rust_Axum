@@ -1,18 +1,21 @@
 use axum::extract::Path;
+pub use self::error::{Error,Result};
 use axum::extract::Query;
 use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::routing::get_service;
+
 use axum::{Router, response::Html};
 use serde::Deserialize;
 use std::net::SocketAddr;
 use tower_http::services::ServeDir;
 mod error;
+mod web;
 #[tokio::main]
 async fn main() {
     // Build our application with a route
     let route_all = Router::new()
-        .merge(router_hello())
+        .merge(router_hello()).merge(web::routes_log::router_api_login())
         .fallback_service(route_static()); // Only works if router_api is a `Router`, not a function call
 
     // Set the address to listen on
